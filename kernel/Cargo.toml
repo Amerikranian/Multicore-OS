@@ -11,3 +11,8 @@ spin = "0.9.8"
 uart_16550 = "0.3.2"
 x86_64 = "0.15.2"
 talc = "4.4.2"
+
+[package.metadata.limage]
+test-success-exit-code = 33 # (0x10 << 1) | 1
+test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio", "-display", "none"]
+image-path = "target/grovean/grovean-x86_64.iso"
