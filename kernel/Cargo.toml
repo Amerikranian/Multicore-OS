@@ -12,6 +12,10 @@ uart_16550 = "0.3.2"
 x86_64 = "0.15.2"
 talc = "4.4.2"
 
+#[build-dependencies]
+#serde = { version = "1.0.217", features = ["derive"] }
+#toml = "0.8.20"
+
 [package.metadata.limage]
 test-success-exit-code = 33 # (0x10 << 1) | 1
 test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio", "-display", "none"]
