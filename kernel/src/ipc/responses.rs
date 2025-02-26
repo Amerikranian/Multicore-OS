@@ -263,7 +263,7 @@ impl Rflush {
     }
     pub fn deserialize(
         header: MessageHeader,
-        mut reader: MessageReader,
+        _reader: MessageReader,
     ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rflush {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
@@ -475,7 +475,7 @@ impl Rclunk {
 
     pub fn deserialize(
         header: MessageHeader,
-        mut reader: MessageReader,
+        _reader: MessageReader,
     ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rclunk {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
@@ -502,7 +502,7 @@ impl Rremove {
 
     pub fn deserialize(
         header: MessageHeader,
-        mut reader: MessageReader,
+        _reader: MessageReader,
     ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rremove {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
@@ -557,7 +557,7 @@ impl Rwstat {
     }
     pub fn deserialize(
         header: MessageHeader,
-        mut reader: MessageReader,
+        _reader: MessageReader,
     ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rwstat {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));

@@ -18,7 +18,7 @@ use crate::{
         messages::Message,
         mnt_manager,
         namespace::Namespace,
-        responses::Rattach,
+        responses::{Rattach, Rerror},
         spsc::{Receiver, Sender},
     },
     logging,
@@ -142,7 +142,9 @@ pub async fn run_server(server_rx: Receiver<Bytes>, server_tx: Sender<Bytes>) {
                     Message::Tattach(..) => {
                         Message::Rattach(Rattach::new(tag, Bytes::from_static(&[0; 13])).unwrap())
                     }
-                    _ => continue,
+                    _ => Message::Rerror(
+                        Rerror::new(tag, Bytes::from_static(b"What a failure we are")).unwrap(),
+                    ),
                 };
 
                 if let Ok(resp_bytes) = response.serialize() {

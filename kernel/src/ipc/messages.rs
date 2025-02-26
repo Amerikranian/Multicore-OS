@@ -1,5 +1,3 @@
-use crate::serial_println;
-
 use super::{error::ProtocolError, requests, responses, serialization::MessageReader};
 use bytes::{Buf, Bytes};
 use core::convert::TryFrom;

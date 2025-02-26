@@ -1,5 +1,3 @@
-use crate::serial_println;
-
 use super::{
     error::Error,
     messages::Message,
@@ -71,7 +69,7 @@ impl Namespace {
                     // Need to attach to the new mount
                     let new_fid = self.next_fid.fetch_add(1, Ordering::Relaxed);
                     let msg = Message::Tattach(
-                        Tattach::new(0, new_fid, 0, Bytes::new(), Bytes::new()).unwrap(),
+                        Tattach::new(1, new_fid, 0, Bytes::new(), Bytes::new()).unwrap(),
                     );
 
                     let response = mnt_manager
@@ -94,7 +92,7 @@ impl Namespace {
                 let new_fid = self.next_fid.fetch_add(1, Ordering::Relaxed);
                 let mut v = Vec::new();
                 v.push(Bytes::copy_from_slice(component.as_bytes()));
-                let msg = Message::Twalk(Twalk::new(0, current_fid, new_fid, v).unwrap());
+                let msg = Message::Twalk(Twalk::new(2, current_fid, new_fid, v).unwrap());
 
                 let response = mnt_manager
                     .send_request(MountId(mount_id as u32), new_fid, msg)
@@ -167,7 +165,6 @@ impl Namespace {
         let response = mnt_manager
             .send_request(MountId(mount_id as u32), fid, msg)
             .await?;
-        serial_println!("Client heard back");
 
         match response {
             Message::Rattach(_) => {
