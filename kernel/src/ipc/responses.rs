@@ -116,9 +116,10 @@ impl Rversion {
         writer.finish()
     }
 
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rversion {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -158,9 +159,10 @@ impl Rauth {
         writer.put_bytes(&self.qid)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rauth {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -195,9 +197,10 @@ impl Rattach {
         writer.finish()
     }
 
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rattach {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -231,9 +234,10 @@ impl Rerror {
         writer.put_bytes(&self.ename)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rerror {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -257,9 +261,10 @@ impl Rflush {
         writer.put_header(self.header.message_type, self.header.tag)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rflush {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -292,9 +297,10 @@ impl Rwalk {
         }
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rwalk {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -331,9 +337,10 @@ impl Ropen {
         writer.put_bytes(&self.qid)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Ropen {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -365,9 +372,10 @@ impl Rcreate {
         writer.put_bytes(&self.qid)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rcreate {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -403,9 +411,10 @@ impl Rread {
         writer.put_bytes(&self.data)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rread {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -436,9 +445,10 @@ impl Rwrite {
         writer.put_u32(self.count)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rwrite {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -462,9 +472,11 @@ impl Rclunk {
         writer.put_header(self.header.message_type, self.header.tag)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rclunk {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -487,9 +499,11 @@ impl Rremove {
         writer.put_header(self.header.message_type, self.header.tag)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rremove {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -514,9 +528,10 @@ impl Rstat {
         writer.put_bytes(&self.stat)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rstat {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }
@@ -540,9 +555,10 @@ impl Rwstat {
         writer.put_header(self.header.message_type, self.header.tag)?;
         writer.finish()
     }
-    pub fn deserialize(mut bytes: Bytes) -> Result<Self, ProtocolError> {
-        let mut reader = MessageReader::new(&mut bytes);
-        let header = reader.read_header()?;
+    pub fn deserialize(
+        header: MessageHeader,
+        mut reader: MessageReader,
+    ) -> Result<Self, ProtocolError> {
         if header.message_type != MessageType::Rwstat {
             return Err(ProtocolError::InvalidMessageType(header.message_type as u8));
         }

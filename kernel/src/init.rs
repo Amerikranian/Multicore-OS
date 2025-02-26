@@ -131,42 +131,26 @@ fn wake_cores() -> u32 {
 
 static TEST_MOUNT_ID: AtomicU32 = AtomicU32::new(0);
 
-static mut PLOCK: bool = true;
-
 pub async fn run_server(server_rx: Receiver<Bytes>, server_tx: Sender<Bytes>) {
     serial_println!("Server starting");
     loop {
-        match server_rx.try_recv() {
-            Ok(msg_bytes) => match Message::parse(msg_bytes) {
-                Ok((msg, tag)) => {
-                    serial_println!("Server got message: {:?}", msg);
-                    let response = match msg {
-                        Message::Tattach(..) => {
-                            Message::Rattach(Rattach::new(tag, Bytes::new()).unwrap())
-                        }
-                        _ => continue,
-                    };
+        let msg_bytes = server_rx.recv().await.unwrap();
+        match Message::parse(msg_bytes) {
+            Ok((msg, tag)) => {
+                serial_println!("Server got message: {:?}", msg);
+                let response = match msg {
+                    Message::Tattach(..) => {
+                        Message::Rattach(Rattach::new(tag, Bytes::from_static(&[0; 13])).unwrap())
+                    }
+                    _ => continue,
+                };
 
-                    if let Ok(resp_bytes) = response.serialize() {
-                        let _ = server_tx.send(resp_bytes).await;
-                    }
+                if let Ok(resp_bytes) = response.serialize() {
+                    let _ = server_tx.send(resp_bytes).await;
                 }
-                Err(e) => serial_println!("(Server) Failed to parse message: {:?}", e),
-            },
-            Err(_) => {
-                unsafe {
-                    if PLOCK {
-                        serial_println!("Got error");
-                        PLOCK = false;
-                    }
-                }
-                // let sleep = nanosleep_current_event(2_000_000_000);
-                // if sleep.is_some() {
-                //     sleep.unwrap().await;
-                // }
             }
+            Err(e) => serial_println!("(Server) Failed to parse message: {:?}", e),
         }
-        yield_now().await;
     }
 }
 

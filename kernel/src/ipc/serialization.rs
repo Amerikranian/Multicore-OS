@@ -1,3 +1,5 @@
+use crate::serial_println;
+
 use super::{
     error::ProtocolError,
     messages::{MessageHeader, MessageType, MAX_MESSAGE_SIZE},
@@ -16,6 +18,8 @@ impl MessageWriter {
     }
 
     pub fn put_header(&mut self, msg_type: MessageType, tag: u16) -> Result<(), ProtocolError> {
+        serial_println!("{:#?}", msg_type);
+        serial_println!("{}", tag);
         self.buf.put_u32_le(0);
         self.buf.put_u8(msg_type as u8);
         self.buf.put_u16_le(tag);

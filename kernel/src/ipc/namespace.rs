@@ -1,3 +1,5 @@
+use crate::serial_println;
+
 use super::{
     error::Error,
     messages::Message,
@@ -165,6 +167,7 @@ impl Namespace {
         let response = mnt_manager
             .send_request(MountId(mount_id as u32), fid, msg)
             .await?;
+        serial_println!("Client heard back");
 
         match response {
             Message::Rattach(_) => {

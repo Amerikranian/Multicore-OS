@@ -1,6 +1,6 @@
 use crate::serial_println;
 
-use super::{error::ProtocolError, requests, responses};
+use super::{error::ProtocolError, requests, responses, serialization::MessageReader};
 use bytes::{Buf, Bytes};
 use core::convert::TryFrom;
 
@@ -183,48 +183,103 @@ pub enum Message {
 }
 
 impl Message {
-    pub fn from_bytes(header: MessageHeader, data: Bytes) -> Result<Self, ProtocolError> {
+    pub fn from_bytes(header: MessageHeader, mut data: Bytes) -> Result<Self, ProtocolError> {
+        let reader = MessageReader::new(&mut data);
         match header.message_type {
-            MessageType::Tversion => Ok(Message::Tversion(requests::Tversion::deserialize(data)?)),
-            MessageType::Rversion => Ok(Message::Rversion(responses::Rversion::deserialize(data)?)),
+            MessageType::Tversion => Ok(Message::Tversion(requests::Tversion::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rversion => Ok(Message::Rversion(responses::Rversion::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Tauth => Ok(Message::Tauth(requests::Tauth::deserialize(data)?)),
-            MessageType::Rauth => Ok(Message::Rauth(responses::Rauth::deserialize(data)?)),
+            MessageType::Tauth => Ok(Message::Tauth(requests::Tauth::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rauth => Ok(Message::Rauth(responses::Rauth::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Tattach => Ok(Message::Tattach(requests::Tattach::deserialize(data)?)),
-            MessageType::Rattach => Ok(Message::Rattach(responses::Rattach::deserialize(data)?)),
+            MessageType::Tattach => Ok(Message::Tattach(requests::Tattach::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rattach => Ok(Message::Rattach(responses::Rattach::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Rerror => Ok(Message::Rerror(responses::Rerror::deserialize(data)?)),
+            MessageType::Rerror => Ok(Message::Rerror(responses::Rerror::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Twalk => Ok(Message::Twalk(requests::Twalk::deserialize(data)?)),
-            MessageType::Rwalk => Ok(Message::Rwalk(responses::Rwalk::deserialize(data)?)),
+            MessageType::Twalk => Ok(Message::Twalk(requests::Twalk::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rwalk => Ok(Message::Rwalk(responses::Rwalk::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Topen => Ok(Message::Topen(requests::Topen::deserialize(data)?)),
-            MessageType::Ropen => Ok(Message::Ropen(responses::Ropen::deserialize(data)?)),
+            MessageType::Topen => Ok(Message::Topen(requests::Topen::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Ropen => Ok(Message::Ropen(responses::Ropen::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Tcreate => Ok(Message::Tcreate(requests::Tcreate::deserialize(data)?)),
-            MessageType::Rcreate => Ok(Message::Rcreate(responses::Rcreate::deserialize(data)?)),
+            MessageType::Tcreate => Ok(Message::Tcreate(requests::Tcreate::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rcreate => Ok(Message::Rcreate(responses::Rcreate::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Tread => Ok(Message::Tread(requests::Tread::deserialize(data)?)),
-            MessageType::Rread => Ok(Message::Rread(responses::Rread::deserialize(data)?)),
+            MessageType::Tread => Ok(Message::Tread(requests::Tread::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rread => Ok(Message::Rread(responses::Rread::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Twrite => Ok(Message::Twrite(requests::Twrite::deserialize(data)?)),
-            MessageType::Rwrite => Ok(Message::Rwrite(responses::Rwrite::deserialize(data)?)),
+            MessageType::Twrite => Ok(Message::Twrite(requests::Twrite::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rwrite => Ok(Message::Rwrite(responses::Rwrite::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Tclunk => Ok(Message::Tclunk(requests::Tclunk::deserialize(data)?)),
-            MessageType::Rclunk => Ok(Message::Rclunk(responses::Rclunk::deserialize(data)?)),
+            MessageType::Tclunk => Ok(Message::Tclunk(requests::Tclunk::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rclunk => Ok(Message::Rclunk(responses::Rclunk::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Tremove => Ok(Message::Tremove(requests::Tremove::deserialize(data)?)),
-            MessageType::Rremove => Ok(Message::Rremove(responses::Rremove::deserialize(data)?)),
+            MessageType::Tremove => Ok(Message::Tremove(requests::Tremove::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rremove => Ok(Message::Rremove(responses::Rremove::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Tstat => Ok(Message::Tstat(requests::Tstat::deserialize(data)?)),
-            MessageType::Rstat => Ok(Message::Rstat(responses::Rstat::deserialize(data)?)),
+            MessageType::Tstat => Ok(Message::Tstat(requests::Tstat::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rstat => Ok(Message::Rstat(responses::Rstat::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Twstat => Ok(Message::Twstat(requests::Twstat::deserialize(data)?)),
-            MessageType::Rwstat => Ok(Message::Rwstat(responses::Rwstat::deserialize(data)?)),
+            MessageType::Twstat => Ok(Message::Twstat(requests::Twstat::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rwstat => Ok(Message::Rwstat(responses::Rwstat::deserialize(
+                header, reader,
+            )?)),
 
-            MessageType::Tflush => Ok(Message::Tflush(requests::Tflush::deserialize(data)?)),
-            MessageType::Rflush => Ok(Message::Rflush(responses::Rflush::deserialize(data)?)),
+            MessageType::Tflush => Ok(Message::Tflush(requests::Tflush::deserialize(
+                header, reader,
+            )?)),
+            MessageType::Rflush => Ok(Message::Rflush(responses::Rflush::deserialize(
+                header, reader,
+            )?)),
 
             // Terror shouldn't be received
             MessageType::Terror => {
@@ -234,7 +289,6 @@ impl Message {
     }
 
     pub fn parse(bytes: Bytes) -> Result<(Self, u16), ProtocolError> {
-        serial_println!("Gasp!");
         let (header, remaining) = MessageHeader::from_bytes(bytes)?;
         let tag = header.tag;
 
@@ -246,7 +300,6 @@ impl Message {
         if header.size > MAX_MESSAGE_SIZE {
             return Err(ProtocolError::MessageTooLarge);
         }
-        serial_println!("Got size: {}", header.size);
 
         let message = Self::from_bytes(header, remaining)?;
         Ok((message, tag))

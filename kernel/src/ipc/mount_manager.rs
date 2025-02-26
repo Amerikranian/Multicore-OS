@@ -34,29 +34,30 @@ impl Mount {
         let pending = Arc::new(Mutex::new(BTreeMap::<u16, PendingRequest>::new()));
         let pending_clone = pending.clone();
         serial_println!("Spawning task");
+
         let task = spawn(
             0,
             async move {
                 loop {
-                    yield_now().await;
-                    match rx.try_recv() {
-                        Ok(response) => match Message::parse(response) {
-                            Ok((msg, tag)) => {
-                                if let Some(pending_req) = pending_clone.lock().remove(&tag) {
-                                    let _ = pending_req.response_tx.send(msg);
-                                }
+                    let response = rx.recv().await.unwrap();
+                    match Message::parse(response) {
+                        Ok((msg, tag)) => {
+                            serial_println!("Got message");
+                            if let Some(pending_req) = pending_clone.lock().remove(&tag) {
+                                serial_println!("Sending back");
+                                let _ = pending_req.response_tx.send(msg);
                             }
-                            Err(e) => {
-                                log::error!("Failed to parse message: {:?}", e);
-                                continue;
-                            }
-                        },
-                        Err(_) => continue,
+                        }
+                        Err(e) => {
+                            log::error!("Failed to parse message: {:?}", e);
+                            continue;
+                        }
                     }
                 }
             },
             1,
         );
+
         serial_println!("Done");
 
         Mount {
