@@ -2,49 +2,51 @@ override STORAGE_NAME := storage_test
 
 .PHONY: check
 check:
-	@cd kernel && \
 	echo "Checking clippy" && \
-	cargo clippy -- -D warnings && \
+	cargo clippy -- -D warnings --all && \
 	echo "Checking formatting" && \
-	cargo fmt --check
+	cargo fmt --check --all
 
 .PHONY: build
 build:
-	@cd kernel && cargo build --features "strict"
+	@cargo build --features "strict"
 
 .PHONY: run
-run:
-	@cd kernel && cargo run
+run: blank_drive
+	@cargo run
 
 .PHONY: run-term
-run-term:
-	@cd kernel && cargo run mode terminal
+run-term: blank_drive
+	@cargo run mode terminal
 
 .PHONY: gdb-term
-gdb-term:
-	@cd kernel && cargo run mode gdb-terminal
+gdb-term: blank_drive
+	@cargo run mode gdb-terminal
 
 .PHONY: gdb-gui
-gdb-gui:
-	@cd kernel && cargo run mode gdb-gui
+gdb-gui: blank_drive
+	@cargo run mode gdb-gui
 
 .PHONY: test
-test:
-	@cd kernel && cargo test
+test: blank_drive
+		@cd $(shell pwd) && CARGO_TARGET_DIR=$(shell pwd)/target cargo test -p taos
 
 .PHONY: fmt
 fmt:
-	@cd kernel && cargo fmt
+	@cargo fmt --all
 
 .PHONY: objdump
 objdump:
-	@cd kernel && cargo objdump --lib --release -- -d -M intel
+	@cargo objdump --lib --release -- -d -M intel
 
 .PHONY: blank_drive
 blank_drive:
-	@cd kernel && dd if=/dev/zero of=$(STORAGE_NAME).img bs=1M count=4k
+	@if [ ! -f "$(STORAGE_NAME).img" ]; then \
+		dd if=/dev/zero of=$(STORAGE_NAME).img bs=1M count=4k; \
+	fi
+	@ln -sf $(shell pwd)/$(STORAGE_NAME).img kernel/$(STORAGE_NAME).img
 
 .PHONY: clean
 clean:
-	@cd kernel && rm $(STORAGE_NAME).img
-	@cd kernel && cargo clean
+	@rm -f $(STORAGE_NAME).img
+	@cargo clean

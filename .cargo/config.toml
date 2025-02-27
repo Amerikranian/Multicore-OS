@@ -8,5 +8,4 @@ build-std-features = ["compiler-builtins-mem"]
 [target.'cfg(target_os = "none")']
 # Limage compatibility with `cargo run`
 runner = "limage run"
-# Updated path to the linker script in the kernel directory
-rustflags = ["-C", "relocation-model=static", "-C", "link-arg=kernel/linker/x86_64.ld", "-C", "code-model=kernel"]
+rustflags = ["-C", "relocation-model=static", "-C", "link-arg=linker/x86_64.ld", "-C", "code-model=kernel"]

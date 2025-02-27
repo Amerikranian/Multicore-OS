@@ -10,7 +10,7 @@
 //! The TAOS operating system
 extern crate alloc;
 
-pub use taos_macros::async_test;
+pub use taos_macros::async_test_case;
 
 use alloc::boxed::Box;
 use core::{future::Future, pin::Pin};
@@ -33,8 +33,7 @@ pub use devices::serial;
 
 pub mod prelude {
     pub use crate::{debug_print, debug_println, serial_print, serial_println};
-    // Re-export the async_test macro in the prelude for easy importing
-    pub use taos_macros::async_test;
+    pub use taos_macros::async_test_case;
 }
 
 #[macro_export]
@@ -147,7 +146,10 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
     test_panic_handler(info)
 }
 
-#[async_test]
+#[async_test_case]
 async fn trivial_test() {
     assert_eq!(1, 1);
 }
+
+#[async_test_case]
+fn second_test() {}
