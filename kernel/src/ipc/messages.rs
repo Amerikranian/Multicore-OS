@@ -334,4 +334,36 @@ impl Message {
             Message::Rflush(m) => m.serialize(),
         }
     }
+
+    pub fn set_tag(&mut self, new_tag: u16) {
+        match self {
+            Message::Tversion(m) => m.header.tag = new_tag,
+            Message::Rversion(m) => m.header.tag = new_tag,
+            Message::Tauth(m) => m.header.tag = new_tag,
+            Message::Rauth(m) => m.header.tag = new_tag,
+            Message::Tattach(m) => m.header.tag = new_tag,
+            Message::Rattach(m) => m.header.tag = new_tag,
+            Message::Rerror(m) => m.header.tag = new_tag,
+            Message::Twalk(m) => m.header.tag = new_tag,
+            Message::Rwalk(m) => m.header.tag = new_tag,
+            Message::Topen(m) => m.header.tag = new_tag,
+            Message::Ropen(m) => m.header.tag = new_tag,
+            Message::Tcreate(m) => m.header.tag = new_tag,
+            Message::Rcreate(m) => m.header.tag = new_tag,
+            Message::Tread(m) => m.header.tag = new_tag,
+            Message::Rread(m) => m.header.tag = new_tag,
+            Message::Twrite(m) => m.header.tag = new_tag,
+            Message::Rwrite(m) => m.header.tag = new_tag,
+            Message::Tclunk(m) => m.header.tag = new_tag,
+            Message::Rclunk(m) => m.header.tag = new_tag,
+            Message::Tremove(m) => m.header.tag = new_tag,
+            Message::Rremove(m) => m.header.tag = new_tag,
+            Message::Tstat(m) => m.header.tag = new_tag,
+            Message::Rstat(m) => m.header.tag = new_tag,
+            Message::Twstat(m) => m.header.tag = new_tag,
+            Message::Rwstat(m) => m.header.tag = new_tag,
+            Message::Tflush(m) => m.header.tag = new_tag,
+            Message::Rflush(m) => m.header.tag = new_tag,
+        }
+    }
 }

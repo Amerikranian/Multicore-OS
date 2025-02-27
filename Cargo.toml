@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "kernel",
+    "taos-macros",
+]
+resolver = "3"
+
+[workspace.dependencies]
+# Common dependencies can go here

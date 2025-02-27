@@ -66,8 +66,9 @@ impl Mount {
         }
     }
 
-    async fn send_request(&self, fid: u32, data: Message) -> Result<Message, Error> {
+    async fn send_request(&self, fid: u32, mut data: Message) -> Result<Message, Error> {
         let tag = self.next_tag.fetch_add(1, Ordering::Relaxed);
+        data.set_tag(tag);
 
         let (response_tx, response_rx) = oneshot::channel();
 

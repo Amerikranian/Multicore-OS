@@ -190,9 +190,7 @@ pub async fn spawn_test() {
     TEST_MOUNT_ID.store(mount_id.0, Ordering::Release);
 
     // Spawn server task
-    let server_handle = spawn(0, run_server(server_rx, server_tx), 0);
-
-    yield_now().await;
+    let _ = spawn(0, run_server(server_rx, server_tx), 0);
 
     let client_handle = spawn(0, run_client(mount_id.0), 0);
 

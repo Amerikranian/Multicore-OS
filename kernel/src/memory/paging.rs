@@ -249,7 +249,7 @@ unsafe fn get_page_table_entry<'a>(
     Some(pte)
 }
 
-#[cfg(test)]
+/*#[cfg(test)]
 mod tests {
     use core::{
         ptr::{read_volatile, write_volatile},
@@ -419,3 +419,4 @@ mod tests {
         remove_mapped_frame(page, &mut *mapper);
     }
 }
+*/

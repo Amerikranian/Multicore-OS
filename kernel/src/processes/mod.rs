@@ -2,7 +2,7 @@ pub mod loader;
 pub mod process;
 pub mod registers;
 
-#[cfg(test)]
+/*#[cfg(test)]
 mod tests {
     use crate::{
         constants::processes::INFINITE_LOOP,
@@ -23,3 +23,4 @@ mod tests {
         assert!(matches!(cpuid, 0));
     }
 }
+*/

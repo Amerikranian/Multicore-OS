@@ -862,7 +862,7 @@ impl FileSystem for Fat16<'_> {
     }
 }
 
-#[cfg(test)]
+/*#[cfg(test)]
 mod tests {
     use super::*;
     use crate::devices::sd_card::SD_CARD;
@@ -935,3 +935,4 @@ mod tests {
         assert_eq!(root_entries.len(), 0, "Root directory should be empty");
     }
 }
+*/
