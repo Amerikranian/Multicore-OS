@@ -56,6 +56,7 @@ static CPU_COUNT: AtomicU64 = AtomicU64::new(0);
 pub fn init() -> u32 {
     assert!(BASE_REVISION.is_supported());
     interrupts::init(0);
+
     memory::init(0);
     devices::init(0);
     // Should be kept after devices in case logging gets complicated
@@ -65,7 +66,6 @@ pub fn init() -> u32 {
     debug!("Waking cores");
     let bsp_id = wake_cores();
 
-    register_event_runner(bsp_id);
     idt::enable();
 
     bsp_id
@@ -95,10 +95,11 @@ unsafe extern "C" fn secondary_cpu_main(cpu: &Cpu) -> ! {
         core::hint::spin_loop();
     }
 
-    register_event_runner(cpu.id);
+    register_event_runner();
     idt::enable();
 
     debug!("AP {} entering event loop", cpu.id);
+
     run_loop(cpu.id)
 }
 
@@ -124,6 +125,7 @@ fn wake_cores() -> u32 {
     while CPU_COUNT.load(Ordering::SeqCst) < cpu_count - 1 {
         core::hint::spin_loop();
     }
+    register_event_runner();
 
     BOOT_COMPLETE.store(true, Ordering::SeqCst);
 

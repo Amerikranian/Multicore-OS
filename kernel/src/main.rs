@@ -48,8 +48,12 @@ extern "C" fn _start() -> ! {
 #[cfg(not(test))]
 #[panic_handler]
 fn rust_panic(info: &core::panic::PanicInfo) -> ! {
+<<<<<<< HEAD
     use taos::serial_println;
     serial_println!("Kernel panic: {}", info);
+=======
+    taos::serial_println!("Kernel panic: {}", info);
+>>>>>>> src/main
     taos::idle_loop();
 }
 
